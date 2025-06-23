@@ -1,9 +1,22 @@
 {
   "url": "https://zhenaya.onrender.com",
+  "server": {
+    "port": 2368,
+    "host": "0.0.0.0"
+  },
   "database": {
     "client": "sqlite3",
     "connection": {
-      "filename": "/var/lib/ghost/content/data/ghost.db"
+      "filename": "content/data/ghost.db"
     }
+  },
+  "logging": {
+    "level": "info",
+    "rotation": {
+      "enabled": true
+    }
+  },
+  "privacy": {
+    "useTinfoil": false
   }
 }
