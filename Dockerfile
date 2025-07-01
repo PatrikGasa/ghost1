@@ -6,9 +6,6 @@ RUN apt-get update && \
     apt-get install -y cron supervisor && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# ✅ Otestujeme, že knižnica sharp je správne dostupná (nutné pre generovanie obrázkov)
-RUN node -e "require('sharp')" || (echo '⚠️ Sharp is not working!' && exit 1)
-
 # Nastavíme pracovný adresár
 WORKDIR $GHOST_INSTALL
 
@@ -26,12 +23,13 @@ RUN chmod 0644 /etc/cron.d/ghost-backup && crontab /etc/cron.d/ghost-backup
 # Skopírujeme supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# ✅ Nezabudneme vytvoriť adresár pre zálohy (Render disk ho však prepisuje len ak nie je mountnutý)
+# ✅ Pripravíme adresár pre zálohy (ak nemáš mount disk)
 RUN mkdir -p /var/lib/ghost/content/backups
 
 # Exponujeme port Ghostu
 EXPOSE 2368
 
-# Spustíme supervisora, ktorý pustí Ghost aj cron
+# Spustíme supervisora
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
 
