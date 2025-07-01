@@ -1,19 +1,24 @@
-# Použijeme oficiálny Ghost image
 FROM ghost:5.89.5
 
-# Nastavíme pracovný adresár Ghostu
+# Nainštalujeme potrebné balíky
+RUN apt-get update && apt-get install -y cron supervisor
+
+# Nastavíme pracovný adresár
 WORKDIR $GHOST_INSTALL
 
-# Skopírujeme konfiguračný súbor a zálohovací skript
+# Skopírujeme config a skript
 COPY config.production.json .
 COPY backup.sh /usr/local/bin/backup.sh
 
-# Nastavíme prístupové práva na spúšťanie skriptu
+# Sprístupníme skript
 RUN chmod +x /usr/local/bin/backup.sh
 
-# Premenné prostredia (voliteľné)
-ENV url=https://zhenaya.onrender.com
-ENV port=$PORT
+# Pridáme crontab
+COPY crontab.txt /etc/cron.d/ghost-backup
+RUN chmod 0644 /etc/cron.d/ghost-backup && crontab /etc/cron.d/ghost-backup
 
-# Predvolený príkaz na spustenie Ghostu
-CMD ["node", "current/index.js"]
+# Supervisor config
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Spustíme supervisora, ktorý pustí cron + ghost
+CMD ["/usr/bin/supervisord"]
