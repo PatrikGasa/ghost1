@@ -1,47 +1,55 @@
 services:
-- type: web
-  name: ghost
-  env: docker
-  autoDeploy: false
-  disk:
+  - type: web
     name: ghost
-    mountPath: /var/lib/ghost/content
-    sizeGB: 10 #Feel free to change this to suit your needs.
-  envVars:
-    - key: database__client
-      value: mysql
-    - key: database__connection__host
-      fromService:
-        type: pserv
-        name: mysql
-        property: host
-    - key: database__connection__database
-      value: ghostdb
-    - key: database__connection__user
-      value: mysql
-    - key: database__connection__password
-      fromService:
-        type: pserv
-        name: mysql
-        envVarKey: MYSQL_PASSWORD
+    env: docker
+    autoDeploy: false
+    disk:
+      name: ghost
+      mountPath: /var/lib/ghost/content
+      sizeGB: 10
+    envVars:
+      - key: database__client
+        value: mysql
+      - key: database__connection__host
+        fromService:
+          type: pserv
+          name: mysql
+          property: host
+      - key: database__connection__database
+        value: ghostdb
+      - key: database__connection__user
+        value: mysql
+      - key: database__connection__password
+        fromService:
+          type: pserv
+          name: mysql
+          envVarKey: MYSQL_PASSWORD
 
-- type: pserv
-  name: mysql
-  plan: standard
-  env: docker
-  repo: https://github.com/render-examples/mysql
-  autoDeploy: false
-  disk:
+  - type: pserv
     name: mysql
-    mountPath: /var/lib/mysql
-    sizeGB: 10
-  envVars:
-    - key: MYSQL_DATABASE
-      value: ghostdb
-    - key: MYSQL_USER
-      value: mysql
-    - key: MYSQL_PASSWORD
-      generateValue: true
-    - key: MYSQL_ROOT_PASSWORD
-      generateValue: true
+    plan: standard
+    env: docker
+    repo: https://github.com/render-examples/mysql
+    autoDeploy: false
+    disk:
+      name: mysql
+      mountPath: /var/lib/mysql
+      sizeGB: 10
+    envVars:
+      - key: MYSQL_DATABASE
+        value: ghostdb
+      - key: MYSQL_USER
+        value: mysql
+      - key: MYSQL_PASSWORD
+        generateValue: true
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
+
+  - type: cron
+    name: ghost-backup-job
+    env: docker
+    repo: https://github.com/PatrikGasa/ghost1
+    schedule: "0 2 * * *"  # každý deň o 2:00 ráno UTC (3:00 ráno v lete pre Slovensko)
+    command: bash backup.sh
+    autoDeploy: false
 
