@@ -46,10 +46,11 @@ services:
         generateValue: true
 
   - type: cron
-    name: ghost-backup-job
+    name: ghost-backup
     env: docker
+    schedule: "0 2 * * *"  # každý deň o 02:00 UTC
     repo: https://github.com/PatrikGasa/ghost1
-    schedule: "0 2 * * *"  # každý deň o 2:00 ráno UTC (3:00 ráno v lete pre Slovensko)
-    command: bash backup.sh
-    autoDeploy: false
+    plan: starter
+    buildCommand: ""
+    startCommand: "bash /usr/local/bin/backup.sh"
 
