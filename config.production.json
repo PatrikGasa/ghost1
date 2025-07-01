@@ -1,5 +1,5 @@
 {
-  "url": "https://zhenaya.onrender.com",
+  "url": "https://www.zhenaya.com",
   "server": {
     "port": 2368,
     "host": "0.0.0.0"
@@ -20,3 +20,4 @@
     "useTinfoil": false
   }
 }
+
