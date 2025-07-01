@@ -10,6 +10,18 @@
       "filename": "content/data/ghost.db"
     }
   },
+  "mail": {
+    "transport": "SMTP",
+    "options": {
+      "host": "smtp.m1.websupport.sk",
+      "port": 465,
+      "secure": true,
+      "auth": {
+        "user": "info@zhenaya.com",
+        "pass": "bruch90OO-"
+      }
+    }
+  },
   "logging": {
     "level": "info",
     "rotation": {
@@ -20,4 +32,3 @@
     "useTinfoil": false
   }
 }
-
