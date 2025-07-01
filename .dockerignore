@@ -1,3 +1,7 @@
+# Ignoruj build-related veci
 Dockerfile
-LICENSE
 README.md
+LICENSE
+
+# Toto je kľúčové:
+content/
