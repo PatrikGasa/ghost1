@@ -9,26 +9,26 @@ RUN apt-get update && \
 # Nastavíme pracovný adresár
 WORKDIR $GHOST_INSTALL
 
-# Skopírujeme konfiguračný súbor a skript na zálohovanie
-COPY config.production.json .
+# Skopírujeme iba potrebné súbory (nie content!)
+COPY config.production.json $GHOST_INSTALL/config.production.json
 COPY backup.sh /usr/local/bin/backup.sh
 
 # Nastavíme práva na spúšťanie skriptu
 RUN chmod +x /usr/local/bin/backup.sh
 
-# Pridáme crontab s dennou zálohou
+# Pridáme crontab
 COPY crontab.txt /etc/cron.d/ghost-backup
 RUN chmod 0644 /etc/cron.d/ghost-backup && crontab /etc/cron.d/ghost-backup
 
 # Skopírujeme supervisor config
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Vytvoríme adresár na zálohy, ak ešte neexistuje
+# ✅ Nezabúdame vytvoriť adresár pre zálohy mimo image (Render disk to neprepíše)
 RUN mkdir -p /var/lib/ghost/content/backups
 
-# Exponujeme port (voliteľne)
+# Exponujeme port Ghostu
 EXPOSE 2368
 
-# Spustíme supervisora – ten spustí cron aj Ghost
+# Spustíme supervisora, ktorý pustí Ghost aj cron
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
